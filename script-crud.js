@@ -6,6 +6,8 @@ const formLabel = document.querySelector('.app__form-label')
 
 const cancelFormTaskBtn = document.querySelector('.app__form-footer__button--cancel')
 
+const taskAtiveDescription = document.querySelector('.app__section-active-task-description')
+
 const textarea = document.querySelector('.app__form-textarea')
 
 const btnCancelar = document.querySelector('.app__form-footer__button--cancel')
@@ -23,6 +25,27 @@ const taskIconSvg = `
 </svg>
 `
 
+let tarefaSelecionada = null
+let itemTarefaSelecionada = null
+
+const selecionaTarefa = (tarefa, elemento) => {
+    document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button){
+        button.classList.remove('app__section-task-list-item-active')
+    })
+
+    if (tarefaSelecionada == tarefa) {
+        taskAtiveDescription.textContent = null
+        itemTarefaSelecionada = null
+        tarefaSelecionada = null
+        return
+    }
+
+    tarefaSelecionada = tarefa
+    itemTarefaSelecionada = elemento
+    taskAtiveDescription.textContent = tarefa.descricao
+    elemento.classList.add('app__section-task-list-item-active')
+}
+
 const limparForm = () => {
     textarea.value = ''
     formTask.classList.add('hidden')
@@ -39,6 +62,10 @@ function createTask(tarefa) {
     paragraph.classList.add('app__section-task-list-item-description')
 
     paragraph.textContent = tarefa.descricao
+
+    li.onclick = () => {
+        selecionaTarefa(tarefa, li)
+    }
 
     li.appendChild(svgIcon)
     li.appendChild(paragraph)
