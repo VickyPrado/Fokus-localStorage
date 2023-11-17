@@ -87,7 +87,12 @@ function createTask(tarefa) {
     const editIcon = document.createElement('img')
     editIcon.setAttribute('src', '/imagens/edit.png')
 
-button.appendChild(editIcon)
+    button.appendChild(editIcon)
+
+    button.addEventListener('click', (event) => {
+        event.stopPropagation()
+        selecionaTarefaParaEditar(tarefa, paragraph)
+    })
 
     li.onclick = () => {
         selecionaTarefa(tarefa, li)
@@ -133,6 +138,10 @@ const updateLocalStorage = () => {
 
 formTask.addEventListener('submit', (evento) => {
     evento.preventDefault()
+    if(tarefaEmEdicao) {
+        tarefaEmEdicao.descricao = textarea.value
+        paragraphEmEdicao.textContent = textarea.value
+    } else {
     const task = {
         descricao: textarea.value,
         concluida: false
@@ -140,7 +149,7 @@ formTask.addEventListener('submit', (evento) => {
     tarefas.push(task)
     const taskItem = createTask(task)
     taskListContainer.appendChild(taskItem)
-
+}
     updateLocalStorage()
     limparForm()
 })
