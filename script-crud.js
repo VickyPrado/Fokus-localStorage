@@ -32,7 +32,11 @@ let tarefaEmEdicao = null
 let paragraphEmEdicao = null
 
 const selecionaTarefa = (tarefa, elemento) => {
-    document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button){
+    if(tarefa.concluida) {
+        return
+    }
+    
+    document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button) {
         button.classList.remove('app__section-task-list-item-active')
     })
 
@@ -82,14 +86,14 @@ function createTask(tarefa) {
     paragraph.textContent = tarefa.descricao
 
     const button = document.createElement('button')
-    
+
     button.classList.add('app_button-edit')
     const editIcon = document.createElement('img')
     editIcon.setAttribute('src', '/imagens/edit.png')
 
     button.appendChild(editIcon)
 
-    button.addEventListener('click', (event) => {
+    button.addEventListener('click', (event) =>{
         event.stopPropagation()
         selecionaTarefaParaEditar(tarefa, paragraph)
     })
@@ -99,9 +103,13 @@ function createTask(tarefa) {
     }
 
     svgIcon.addEventListener('click', (event) => {
-        event.stopPropagation()
-        button.setAttribute('disabled', true)
-        li.classList.add('app__section-task-list-item-complete')
+        if(tarefa==tarefaSelecionada) {
+            event.stopPropagation()
+            button.setAttribute('disabled', true)
+            li.classList.add('app__section-task-list-item-complete')
+            tarefaSelecionada.concluida = true
+            updateLocalStorage()
+        }
     })
 
     if(tarefa.concluida){
@@ -112,7 +120,7 @@ function createTask(tarefa) {
     li.appendChild(svgIcon)
     li.appendChild(paragraph)
     li.appendChild(button)
-
+    
     return li
 }
 
@@ -152,4 +160,13 @@ formTask.addEventListener('submit', (evento) => {
 }
     updateLocalStorage()
     limparForm()
+})
+
+document.addEventListener('TarefaFinalizada', function (e) {
+    if(tarefaSelecionada) {
+        tarefaSelecionada.concluida = true
+        itemTarefaSelecionada.classList.add('app__section-task-list-item-complete')
+        itemTarefaSelecionada.querySelector('button').setAttribute('disabled', true)
+        updateLocalStorage()
+    }
 })
